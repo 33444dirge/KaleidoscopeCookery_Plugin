@@ -319,7 +319,7 @@ behaviors:
     animation_view_distance: 1   # 开合动画发包视距（区块）
 ```
 
-> 进入桶内的遮罩复用原版南瓜头覆盖层：把资源包的 `assets/minecraft/textures/misc/pumpkinblur.png` 替换成垃圾桶遮罩（透明缝隙版），戴南瓜时看到的就是它。这是全局的，戴真南瓜也会变这个图。
+> 进入桶内的遮罩复用装备遮盖层：把资源包的 `assets/minecraft/textures/misc/zhezhao.png` 替换成垃圾桶遮罩（透明缝隙版），戴zhezhao装备时看到的就是它。
 
 ### 🧩 其它行为
 
