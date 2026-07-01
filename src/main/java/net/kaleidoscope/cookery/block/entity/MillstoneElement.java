@@ -12,7 +12,7 @@ import net.momirealms.craftengine.core.item.Item;
 import net.momirealms.craftengine.core.util.MiscUtils;
 import net.momirealms.craftengine.core.world.WorldPosition;
 import net.momirealms.craftengine.proxy.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacketProxy;
-import net.momirealms.craftengine.proxy.minecraft.world.entity.EntityProxy;
+import net.momirealms.craftengine.bukkit.util.EntityUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -54,13 +54,13 @@ public final class MillstoneElement implements FurnitureElement {
         this.srcChunkZ = ((int) Math.floor(position.z)) >> 4;
         this.model = new MillstoneModel(controller.behavior());
 
-        this.stick1Id = EntityProxy.ENTITY_COUNTER.incrementAndGet();
+        this.stick1Id = EntityUtils.ENTITY_COUNTER.incrementAndGet();
         this.stick1Uuid = UUID.randomUUID();
 
-        this.stick2Id = EntityProxy.ENTITY_COUNTER.incrementAndGet();
+        this.stick2Id = EntityUtils.ENTITY_COUNTER.incrementAndGet();
         this.stick2Uuid = UUID.randomUUID();
 
-        this.stoneId = EntityProxy.ENTITY_COUNTER.incrementAndGet();
+        this.stoneId = EntityUtils.ENTITY_COUNTER.incrementAndGet();
         this.stoneUuid = UUID.randomUUID();
 
         refreshPackets();
@@ -171,16 +171,6 @@ public final class MillstoneElement implements FurnitureElement {
     }
 
     @Override
-    public void refresh(Player player) {
-        List<Object> packets = new ArrayList<>();
-        packets.add(metaPacket1);
-        packets.add(metaPacket2);
-        packets.add(metaPacket3);
-        player.sendPacket(PacketBundles.of(packets), false);
-        sendAllGrind(player);
-    }
-
-    @Override
     public void gatherInteractableEntityId(Consumer<Integer> collector) {
         collector.accept(stick1Id);
         collector.accept(stick2Id);
@@ -214,6 +204,7 @@ public final class MillstoneElement implements FurnitureElement {
         grindDisplay.removeAll(player);
     }
 
+    @Override
     public void update(@NotNull Player player) {
         // 内容更新由控制器主动推送 不在此重建实体 避免丢旋转插值状态 参考 PotElement
     }

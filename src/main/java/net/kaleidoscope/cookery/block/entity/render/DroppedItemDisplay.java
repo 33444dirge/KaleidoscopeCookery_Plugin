@@ -11,8 +11,8 @@ import net.momirealms.craftengine.core.world.WorldPosition;
 import net.momirealms.craftengine.proxy.minecraft.network.protocol.game.ClientboundAddEntityPacketProxy;
 import net.momirealms.craftengine.proxy.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacketProxy;
 import net.momirealms.craftengine.proxy.minecraft.network.protocol.game.ClientboundSetEntityDataPacketProxy;
-import net.momirealms.craftengine.proxy.minecraft.world.entity.EntityProxy;
-import net.momirealms.craftengine.proxy.minecraft.world.entity.EntityTypeProxy;
+import net.momirealms.craftengine.bukkit.util.EntityUtils;
+import net.momirealms.craftengine.proxy.minecraft.world.entity.EntityTypesProxy;
 import net.momirealms.craftengine.proxy.minecraft.world.phys.Vec3Proxy;
 
 import java.util.ArrayList;
@@ -33,8 +33,8 @@ public final class DroppedItemDisplay {
     private boolean present;
 
     public DroppedItemDisplay() {
-        this.vehicleId = EntityProxy.ENTITY_COUNTER.incrementAndGet();
-        this.passengerId = EntityProxy.ENTITY_COUNTER.incrementAndGet();
+        this.vehicleId = EntityUtils.ENTITY_COUNTER.incrementAndGet();
+        this.passengerId = EntityUtils.ENTITY_COUNTER.incrementAndGet();
         this.ridePacket = PacketUtils.createClientboundSetPassengersPacket(vehicleId, passengerId);
         this.despawnPacket = ClientboundRemoveEntitiesPacketProxy.INSTANCE.newInstance(
                 MiscUtils.init(new IntArrayList(), a -> {
@@ -54,9 +54,9 @@ public final class DroppedItemDisplay {
             return;
         }
         this.spawnVehicle = ClientboundAddEntityPacketProxy.INSTANCE.newInstance(
-                vehicleId, vehicleUUID, pos.x, pos.y, pos.z, 0, 0, EntityTypeProxy.ITEM_DISPLAY, 0, Vec3Proxy.ZERO, 0);
+                vehicleId, vehicleUUID, pos.x, pos.y, pos.z, 0, 0, EntityTypesProxy.ITEM_DISPLAY, 0, Vec3Proxy.ZERO, 0);
         this.spawnPassenger = ClientboundAddEntityPacketProxy.INSTANCE.newInstance(
-                passengerId, passengerUUID, pos.x, pos.y, pos.z, 0, 0, EntityTypeProxy.ITEM, 0, Vec3Proxy.ZERO, 0);
+                passengerId, passengerUUID, pos.x, pos.y, pos.z, 0, 0, EntityTypesProxy.ITEM, 0, Vec3Proxy.ZERO, 0);
         List<Object> data = new ArrayList<>();
         ItemEntityData.Item.addEntityData(item.minecraftItem(), data);
         this.itemDataPacket = ClientboundSetEntityDataPacketProxy.INSTANCE.newInstance(passengerId, data);

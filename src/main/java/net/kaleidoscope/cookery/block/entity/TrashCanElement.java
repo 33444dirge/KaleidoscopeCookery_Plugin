@@ -133,7 +133,7 @@ public final class TrashCanElement implements FurnitureElement {
     }
 
     @Override
-    public void refresh(@NotNull Player player) {
+    public void update(@NotNull Player player) {
         sendStaticMetas(player);
     }
 

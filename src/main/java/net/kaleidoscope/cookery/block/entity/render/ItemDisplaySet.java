@@ -3,7 +3,7 @@ package net.kaleidoscope.cookery.block.entity.render;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.momirealms.craftengine.core.entity.player.Player;
 import net.momirealms.craftengine.proxy.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacketProxy;
-import net.momirealms.craftengine.proxy.minecraft.world.entity.EntityProxy;
+import net.momirealms.craftengine.bukkit.util.EntityUtils;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,7 +21,7 @@ public final class ItemDisplaySet {
         this.spawnPackets = new Object[size];
         this.metaPackets = new Object[size];
         for (int i = 0; i < size; i++) {
-            this.entityIds[i] = EntityProxy.ENTITY_COUNTER.incrementAndGet();
+            this.entityIds[i] = EntityUtils.ENTITY_COUNTER.incrementAndGet();
             this.uuids[i] = UUID.randomUUID();
         }
     }

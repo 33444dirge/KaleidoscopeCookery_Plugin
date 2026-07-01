@@ -15,8 +15,8 @@ import net.momirealms.craftengine.libraries.adventure.text.Component;
 import net.momirealms.craftengine.proxy.minecraft.network.protocol.game.ClientboundAddEntityPacketProxy;
 import net.momirealms.craftengine.proxy.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacketProxy;
 import net.momirealms.craftengine.proxy.minecraft.network.protocol.game.ClientboundSetEntityDataPacketProxy;
-import net.momirealms.craftengine.proxy.minecraft.world.entity.EntityProxy;
-import net.momirealms.craftengine.proxy.minecraft.world.entity.EntityTypeProxy;
+import net.momirealms.craftengine.bukkit.util.EntityUtils;
+import net.momirealms.craftengine.proxy.minecraft.world.entity.EntityTypesProxy;
 import net.momirealms.craftengine.proxy.minecraft.world.phys.Vec3Proxy;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
@@ -40,7 +40,7 @@ public final class TeapotElement implements BlockEntityElement {
     private final ItemDisplaySet display = new ItemDisplaySet(2);
     private boolean built;
 
-    private final int textId = EntityProxy.ENTITY_COUNTER.incrementAndGet();
+    private final int textId = EntityUtils.ENTITY_COUNTER.incrementAndGet();
     private final UUID textUuid = UUID.randomUUID();
     private final Object textSpawn;
     private final Object textRemove;
@@ -52,7 +52,7 @@ public final class TeapotElement implements BlockEntityElement {
         this.textSpawn = ClientboundAddEntityPacketProxy.INSTANCE.newInstance(
                 textId, textUuid,
                 controller.getPos().x() + 0.5, controller.getPos().y() + TEXT_Y_OFFSET, controller.getPos().z() + 0.5,
-                0, 0, EntityTypeProxy.TEXT_DISPLAY, 0, Vec3Proxy.ZERO, 0);
+                0, 0, EntityTypesProxy.TEXT_DISPLAY, 0, Vec3Proxy.ZERO, 0);
         this.textRemove = ClientboundRemoveEntitiesPacketProxy.INSTANCE.newInstance(
                 MiscUtils.init(new IntArrayList(), a -> a.add(textId)));
         buildTextData(Component.empty());

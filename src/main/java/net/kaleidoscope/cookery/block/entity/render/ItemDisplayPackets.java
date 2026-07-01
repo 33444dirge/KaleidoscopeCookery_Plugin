@@ -5,7 +5,7 @@ import net.momirealms.craftengine.core.item.Item;
 import net.momirealms.craftengine.core.world.WorldPosition;
 import net.momirealms.craftengine.proxy.minecraft.network.protocol.game.ClientboundAddEntityPacketProxy;
 import net.momirealms.craftengine.proxy.minecraft.network.protocol.game.ClientboundSetEntityDataPacketProxy;
-import net.momirealms.craftengine.proxy.minecraft.world.entity.EntityTypeProxy;
+import net.momirealms.craftengine.proxy.minecraft.world.entity.EntityTypesProxy;
 import net.momirealms.craftengine.proxy.minecraft.world.phys.Vec3Proxy;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -89,6 +89,6 @@ public final class ItemDisplayPackets {
 
     public Object spawn(int entityId, UUID uuid) {
         return ClientboundAddEntityPacketProxy.INSTANCE.newInstance(
-                entityId, uuid, baseX, baseY, baseZ, 0, 0, EntityTypeProxy.ITEM_DISPLAY, 0, Vec3Proxy.ZERO, 0);
+                entityId, uuid, baseX, baseY, baseZ, 0, 0, EntityTypesProxy.ITEM_DISPLAY, 0, Vec3Proxy.ZERO, 0);
     }
 }

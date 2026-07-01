@@ -19,8 +19,8 @@ import net.momirealms.craftengine.proxy.minecraft.network.protocol.game.Clientbo
 import net.momirealms.craftengine.proxy.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacketProxy;
 import net.momirealms.craftengine.proxy.minecraft.network.protocol.game.ClientboundSetEntityDataPacketProxy;
 import net.momirealms.craftengine.proxy.minecraft.network.protocol.game.ClientboundUpdateAttributesPacketProxy;
-import net.momirealms.craftengine.proxy.minecraft.world.entity.EntityProxy;
-import net.momirealms.craftengine.proxy.minecraft.world.entity.EntityTypeProxy;
+import net.momirealms.craftengine.bukkit.util.EntityUtils;
+import net.momirealms.craftengine.proxy.minecraft.world.entity.EntityTypesProxy;
 import net.momirealms.craftengine.proxy.minecraft.world.entity.ai.attributes.AttributeInstanceProxy;
 import net.momirealms.craftengine.proxy.minecraft.world.entity.ai.attributes.AttributesProxy;
 import net.momirealms.craftengine.proxy.minecraft.world.phys.Vec3Proxy;
@@ -99,9 +99,9 @@ public final class StockpotElement implements BlockEntityElement {
         this.controller = controller;
         this.basePos = position;
 
-        liquidEntityId = EntityProxy.ENTITY_COUNTER.incrementAndGet();
+        liquidEntityId = EntityUtils.ENTITY_COUNTER.incrementAndGet();
         liquidUuid = UUID.randomUUID();
-        fishEntityId = EntityProxy.ENTITY_COUNTER.incrementAndGet();
+        fishEntityId = EntityUtils.ENTITY_COUNTER.incrementAndGet();
         fishUuid = UUID.randomUUID();
 
         refreshPackets();
@@ -151,7 +151,7 @@ public final class StockpotElement implements BlockEntityElement {
             this.liquidSpawnPacket = ClientboundAddEntityPacketProxy.INSTANCE.newInstance(
                     liquidEntityId, liquidUuid,
                     basePos.x - 0.2f, basePos.y + 0.8f, basePos.z - 0.2f,
-                    0, 0, EntityTypeProxy.ITEM_DISPLAY, 0, Vec3Proxy.ZERO, 0
+                    0, 0, EntityTypesProxy.ITEM_DISPLAY, 0, Vec3Proxy.ZERO, 0
             );
         } else {
             this.liquidSpawnPacket = null;

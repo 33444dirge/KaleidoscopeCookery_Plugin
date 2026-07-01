@@ -7,7 +7,7 @@ import net.momirealms.craftengine.core.item.Item;
 import net.momirealms.craftengine.core.util.MiscUtils;
 import net.momirealms.craftengine.core.world.WorldPosition;
 import net.momirealms.craftengine.proxy.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacketProxy;
-import net.momirealms.craftengine.proxy.minecraft.world.entity.EntityProxy;
+import net.momirealms.craftengine.bukkit.util.EntityUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
@@ -36,8 +36,8 @@ public final class KitchenwareRacksElement implements BlockEntityElement {
                                    @Nullable WorldPosition leftPosition,
                                    @Nullable WorldPosition rightPosition) {
         this.controller = controller;
-        this.leftItemId = EntityProxy.ENTITY_COUNTER.incrementAndGet();
-        this.rightItemId = EntityProxy.ENTITY_COUNTER.incrementAndGet();
+        this.leftItemId = EntityUtils.ENTITY_COUNTER.incrementAndGet();
+        this.rightItemId = EntityUtils.ENTITY_COUNTER.incrementAndGet();
 
         this.despawnLeftPacket = ClientboundRemoveEntitiesPacketProxy.INSTANCE.newInstance(
                 MiscUtils.init(new IntArrayList(), a -> a.add(leftItemId)));
