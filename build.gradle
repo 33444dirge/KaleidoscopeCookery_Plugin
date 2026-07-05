@@ -47,7 +47,7 @@ nmsVersions.each { sourceSetName, version ->
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:26.1.2.build.+")
+    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
     compileOnly("net.momirealms:craft-engine-bukkit:26.7")
     compileOnly("net.momirealms:craft-engine-core:26.7")
     compileOnly("net.momirealms:craft-engine-adventure:26.7")
