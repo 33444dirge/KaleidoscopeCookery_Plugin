@@ -46,9 +46,9 @@ public final class TeapotBehavior extends BukkitBlockBehavior implements EntityB
     public int particleInterval = 20;
     public int particleCount = 3;
 
-    public String msgPut = "准备";
-    public String msgProcessing = "熬煮中";
-    public String msgFinished = "完成";
+    public String msgPut = "kaleidoscopecookery.message.teapot.put";
+    public String msgProcessing = "kaleidoscopecookery.message.teapot.processing";
+    public String msgFinished = "kaleidoscopecookery.message.teapot.finished";
 
     private TeapotBehavior(BlockDefinition blockDefinition) {
         super(blockDefinition);

@@ -1,6 +1,8 @@
 package net.kaleidoscope.cookery.util;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.momirealms.craftengine.bukkit.item.BukkitItemManager;
 import net.momirealms.craftengine.core.item.Item;
@@ -41,6 +43,11 @@ public final class RecipeUtils {
             new NamespacedKey(KaleidoscopeCookeryPlugin.instance(), "recipe_type");
     public static final NamespacedKey RECIPE_INGREDIENTS_KEY =
             new NamespacedKey(KaleidoscopeCookeryPlugin.instance(), "recipe_ingredients");
+    private static final String TEXT_INGREDIENTS = "tooltip.kaleidoscopecookery.recipe_item.ingredient";
+    private static final String TEXT_OUTPUT = "tooltip.kaleidoscopecookery.recipe_item.output";
+    private static final String TEXT_REQUIRED_LIQUID = "tooltip.kaleidoscopecookery.recipe_item.required_liquid";
+    private static final String TEXT_USE = "tooltip.kaleidoscopecookery.recipe_item.use";
+    private static final String TEXT_TITLE = "item.kaleidoscopecookery.recipe_item.title";
 
     public static boolean hasRecipe(ItemStack stack) {
         if (stack == null || stack.getItemMeta() == null) {
@@ -110,7 +117,7 @@ public final class RecipeUtils {
 
         Key resultKey;
         List<Key> ingredients;
-        String applianceName;
+        Component applianceName;
         ApplianceType applianceType;
         List<Key> recipeLiquids = List.of();
 
@@ -129,8 +136,8 @@ public final class RecipeUtils {
             recipeLiquids = r.liquids();
         }
 
-        String resultName;
-        String outLine;
+        Component resultName;
+        Component outLine;
 
         if ("flex".equals(recipeType)) {
             Optional<FoodRecipeResult> res = FoodRecipeRegistry.instance()
@@ -140,55 +147,78 @@ public final class RecipeUtils {
             if (res.isPresent()) {
                 FoodRecipeResult fr = res.get();
                 Item out = fr.item();
-                String img = out.id().value();
-                StringBuilder outLineBuilder = new StringBuilder("<white><!i>输出: ");
-                for (int i = 0; i < Math.max(1, fr.count()); i++) {
-                    outLineBuilder.append("<image:kaleidoscopecookery:").append(img).append(">");
-                }
-                outLine = outLineBuilder.toString();
-                resultName = out.hoverNameComponent()
-                        .map(AdventureHelper::componentToMiniMessage)
-                        .orElse(getDisplayName(out.id()));
+                outLine = label(TEXT_OUTPUT).append(Component.space()).append(images(out.id(), Math.max(1, fr.count())));
+                resultName = displayName(out);
             } else {
-                outLine = "<white><!i>输出: <image:kaleidoscopecookery:suspicious_stir_fry>";
-                resultName = getDisplayName(ItemKeys.SUSPICIOUS_STIR_FRY);
+                outLine = label(TEXT_OUTPUT).append(Component.space()).append(image(ItemKeys.SUSPICIOUS_STIR_FRY));
+                resultName = displayName(ItemKeys.SUSPICIOUS_STIR_FRY);
             }
         } else {
-            resultName = getDisplayName(resultKey);
-            outLine = "<white><!i>输出: <image:kaleidoscopecookery:" + resultKey.value() + ">";
-        }
-
-        StringBuilder ingLine = new StringBuilder("<white><!i>原料: ");
-        for (Key ing : ingredients) {
-            ingLine.append("<image:kaleidoscopecookery:").append(ing.value()).append(">");
+            resultName = displayName(resultKey);
+            outLine = label(TEXT_OUTPUT).append(Component.space()).append(image(resultKey));
         }
 
         List<Component> lore = new ArrayList<>();
-        lore.add(MiniMessage.miniMessage().deserialize(ingLine.toString()));
-        lore.add(MiniMessage.miniMessage().deserialize(""));
-        lore.add(MiniMessage.miniMessage().deserialize(outLine));
+        lore.add(label(TEXT_INGREDIENTS).append(Component.space()).append(images(ingredients)));
+        lore.add(Component.empty());
+        lore.add(outLine);
         if (liquid != null && !liquid.asString().equals("minecraft:water")) {
-            lore.add(MiniMessage.miniMessage().deserialize(""));
-            lore.add(MiniMessage.miniMessage().deserialize("<white><!i>所需汤底：<image:kaleidoscopecookery:" + liquid.value() + ">"));
+            lore.add(Component.empty());
+            lore.add(label(TEXT_REQUIRED_LIQUID).append(Component.space()).append(image(liquid)));
         }
-        lore.add(MiniMessage.miniMessage().deserialize("<gray><!i>右键炒锅/煮锅记录食材，下次可右键使用一键投入"));
+        lore.add(Component.translatable(TEXT_USE).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 
         meta.lore(lore);
-        meta.displayName(MiniMessage.miniMessage().deserialize(
-                "<white><!i>菜谱：" + resultName + "，用于" + applianceName));
+        meta.displayName(Component.translatable(TEXT_TITLE, NamedTextColor.WHITE, resultName, applianceName)
+                .decoration(TextDecoration.ITALIC, false));
         stack.setItemMeta(meta);
     }
 
-    private static String applianceDisplayName(ApplianceType type) {
+    private static Component applianceDisplayName(ApplianceType type) {
         return switch (type) {
-            case POT -> "炒锅";
-            case STOCKPOT -> "煮锅";
-            case SHAWARMA -> "沙威玛烤架";
-            default -> type.name();
+            case POT -> Component.translatable("item.kaleidoscopecookery.pot");
+            case STOCKPOT -> Component.translatable("item.kaleidoscopecookery.stockpot");
+            case SHAWARMA -> Component.translatable("item.kaleidoscopecookery.shawarma_spit");
+            default -> Component.text(type.name());
         };
     }
 
-    private static String getDisplayName(Key key) {
-        return ItemNames.displayName(key);
+    private static Component label(String key) {
+        return Component.translatable(key).color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false);
+    }
+
+    private static Component images(List<Key> keys) {
+        Component component = Component.empty();
+        for (Key key : keys) {
+            component = component.append(image(key));
+        }
+        return component;
+    }
+
+    private static Component images(Key key, int count) {
+        Component component = Component.empty();
+        for (int i = 0; i < count; i++) {
+            component = component.append(image(key));
+        }
+        return component;
+    }
+
+    private static Component image(Key key) {
+        return MiniMessage.miniMessage().deserialize("<image:kaleidoscopecookery:" + key.value() + ">");
+    }
+
+    private static Component displayName(Item item) {
+        return item.hoverNameComponent()
+                .map(AdventureHelper::componentToMiniMessage)
+                .map(MiniMessage.miniMessage()::deserialize)
+                .orElseGet(() -> displayName(item.id()));
+    }
+
+    private static Component displayName(Key key) {
+        String displayName = ItemNames.displayName(key);
+        if (!displayName.equals(key.value())) {
+            return MiniMessage.miniMessage().deserialize(displayName);
+        }
+        return Component.translatable("item." + key.namespace() + "." + key.value());
     }
 }

@@ -30,6 +30,7 @@ import net.kaleidoscope.cookery.recipe.ApplianceType;
 import net.kaleidoscope.cookery.recipe.FoodCategoryRegistry;
 import net.kaleidoscope.cookery.recipe.FoodRecipeRegistry;
 import net.kaleidoscope.cookery.recipe.FoodRecipeResult;
+import net.kaleidoscope.cookery.util.Localization;
 import net.kaleidoscope.cookery.util.EventUtils;
 import net.kaleidoscope.cookery.item.ItemKeys;
 import net.kaleidoscope.cookery.api.event.PotStirFryEvent;
@@ -161,7 +162,7 @@ public class PotController extends BlockEntityController {
             boolean firstStir = stirFryCount == 0;
             stirFryCount++;
             if (stage == PotStage.IDLE) stage = PotStage.COOKING;
-            if (firstStir && player != null) player.sendActionBar(Component.text(behavior.msgStartCooking));
+            if (firstStir && player != null) player.sendActionBar(Localization.component(behavior.msgStartCooking));
         }
 
         element.refreshPackets();
@@ -185,14 +186,14 @@ public class PotController extends BlockEntityController {
             results.add(fr.item().count(fr.count()));
             stage = PotStage.DONE;
             currentTick = behavior.cookDoneTime;
-            if (triggerPlayer != null) triggerPlayer.sendActionBar(Component.text(behavior.msgDishReady));
+            if (triggerPlayer != null) triggerPlayer.sendActionBar(Localization.component(behavior.msgDishReady));
         } else {
             Item suspense = InventoryUtils.createOrEmpty(ItemKeys.SUSPICIOUS_STIR_FRY);
             if (!ItemUtils.isEmpty(suspense)) results.add(suspense.count(1));
             stage = PotStage.BURNT;
             currentTick = behavior.burntToCharcoalTime;
             lastSentBrightness = -1;
-            if (triggerPlayer != null) triggerPlayer.sendActionBar(Component.text(behavior.msgAllBurnt));
+            if (triggerPlayer != null) triggerPlayer.sendActionBar(Localization.component(behavior.msgAllBurnt));
         }
         cookedIngredientCount = ingredients.size();
         cookedDishCount = 0;
@@ -207,7 +208,7 @@ public class PotController extends BlockEntityController {
 
     public void addIngredient(Item item, boolean hasHeatSource, Player player) {
         if (!FoodCategoryRegistry.instance().isRegistered(ApplianceType.POT, item.id())) {
-            if (player != null) player.sendActionBar(Component.text(behavior.msgNotIngredient));
+            if (player != null) player.sendActionBar(Localization.component(behavior.msgNotIngredient));
             return;
         }
         if (stage == PotStage.DONE || stage == PotStage.BURNT || animating || ingredients.size() >= MAX_INGREDIENTS) return;

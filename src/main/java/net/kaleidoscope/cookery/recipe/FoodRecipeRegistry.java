@@ -5,12 +5,16 @@ import net.momirealms.craftengine.core.item.Item;
 import net.momirealms.craftengine.core.util.AdventureHelper;
 import net.kaleidoscope.cookery.item.ItemNames;
 import net.momirealms.craftengine.core.util.Key;
+import net.momirealms.craftengine.libraries.adventure.text.Component;
+import net.momirealms.craftengine.libraries.adventure.text.format.TextDecoration;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class FoodRecipeRegistry {
+    private static final String TEXT_FLEX_DISH_NAMED = "item.kaleidoscopecookery.flex_dish.named";
+    private static final String TEXT_FLEX_DISH_SEPARATOR = "item.kaleidoscopecookery.flex_dish.separator";
     private static final FoodRecipeRegistry INSTANCE = new FoodRecipeRegistry();
     private final List<FlexFoodRecipe> flexRecipes = new CopyOnWriteArrayList<>();
     private final List<AccurateFoodRecipe> accurateRecipes = new CopyOnWriteArrayList<>();
@@ -390,16 +394,18 @@ public final class FoodRecipeRegistry {
         boolean unprefPresent = anyPresent(r.unpreferred(), counts);
 
         List<Key> flavor = unprefPresent ? r.unpreferred() : r.preferred();
-        List<String> names = new ArrayList<>();
+        List<Component> names = new ArrayList<>();
         for (Key k : flavor) {
             if (counts.getOrDefault(k, 0) > 0) {
-                names.add(displayName(k));
+                names.add(displayNameComponent(k));
             }
         }
         if (!names.isEmpty()) {
-            String base = item.hoverNameComponent().map(AdventureHelper::componentToMiniMessage).orElse(r.result().value());
-            item.customNameJson(AdventureHelper.componentToJson(
-                    AdventureHelper.miniMessage().deserialize("<!i>添加了" + String.join("、", names) + "的" + base)));
+            Component base = item.hoverNameComponent()
+                    .orElseGet(() -> Component.translatable(itemTranslationKey(r.result())));
+            Component name = Component.translatable(TEXT_FLEX_DISH_NAMED, joinNames(names), base)
+                    .decoration(TextDecoration.ITALIC, false);
+            item.customNameJson(AdventureHelper.componentToJson(name));
         }
 
         List<String> loreLines = resolveLoreLines(r, counts);
@@ -548,6 +554,29 @@ public final class FoodRecipeRegistry {
 
     private String displayName(Key key) {
         return ItemNames.displayName(key);
+    }
+
+    private Component displayNameComponent(Key key) {
+        String displayName = displayName(key);
+        if (!displayName.equals(key.value())) {
+            return AdventureHelper.miniMessage().deserialize(displayName);
+        }
+        return Component.translatable(itemTranslationKey(key));
+    }
+
+    private Component joinNames(List<Component> names) {
+        Component result = Component.empty();
+        for (int i = 0; i < names.size(); i++) {
+            if (i > 0) {
+                result = result.append(Component.translatable(TEXT_FLEX_DISH_SEPARATOR));
+            }
+            result = result.append(names.get(i));
+        }
+        return result;
+    }
+
+    private String itemTranslationKey(Key key) {
+        return "item." + key.namespace() + "." + key.value();
     }
 
     // 按权重随机选一个成品 Key 权重总和归一化 全 0 权重则退回首个

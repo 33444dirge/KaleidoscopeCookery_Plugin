@@ -58,6 +58,7 @@ import net.kaleidoscope.cookery.util.HeatSourceUtils;
 import net.kaleidoscope.cookery.util.BehaviorConfig;
 import net.kaleidoscope.cookery.util.InteractGuard;
 import net.kaleidoscope.cookery.util.InventoryUtils;
+import net.kaleidoscope.cookery.util.Localization;
 import net.kaleidoscope.cookery.plugin.KaleidoscopeCookeryPlugin;
 
 import java.util.ArrayList;
@@ -85,9 +86,9 @@ public final class SteamerBehavior extends BukkitBlockBehavior implements Entity
     public int cookingTime = 200;
     public int particleInterval = 20;
     public int particleCount = 3;
-    public String msgMaxLayers = "蒸笼最多只能叠 {max} 层";
-    public String msgFull = "蒸笼已满";
-    public String msgNeedStove = "请放在炉灶上方";
+    public String msgMaxLayers = "kaleidoscopecookery.message.steamer.max_layers";
+    public String msgFull = "kaleidoscopecookery.message.steamer.full";
+    public String msgNeedStove = "kaleidoscopecookery.message.steamer.need_stove";
 
     private int controllerId;
     private Property<SlabType> typeProperty;
@@ -180,7 +181,7 @@ public final class SteamerBehavior extends BukkitBlockBehavior implements Entity
     private InteractionResult handleStackSteamer(UseOnContext context, ImmutableBlockState state, World level, Player player, InteractionHand hand, Item itemInHand) {
         int cap = stackHeightCap(level, context.getClickedPos());
         if (stackLayerCount(level, context.getClickedPos()) >= cap) {
-            player.sendActionBar(Component.text(msgMaxLayers.replace("{max}", String.valueOf(cap))));
+            player.sendActionBar(Localization.componentWithReplacement(msgMaxLayers, "{max}", String.valueOf(cap)));
             return InteractionResult.SUCCESS_AND_CANCEL;
         }
 
@@ -273,7 +274,7 @@ public final class SteamerBehavior extends BukkitBlockBehavior implements Entity
             }
         }
         if (placed == 0) {
-            player.sendActionBar(Component.text(msgFull));
+            player.sendActionBar(Localization.component(msgFull));
             return -1;
         }
         return placed;
@@ -569,7 +570,7 @@ public final class SteamerBehavior extends BukkitBlockBehavior implements Entity
         Object belowPos = LocationUtils.below(LocationUtils.toBlockPos(clickedPos));
         if (!HeatSourceUtils.isHeatSource(level, belowPos)) {
             if (context.getPlayer() != null) {
-                context.getPlayer().sendActionBar(Component.text(msgNeedStove));
+                context.getPlayer().sendActionBar(Localization.component(msgNeedStove));
             }
             return null;
         }

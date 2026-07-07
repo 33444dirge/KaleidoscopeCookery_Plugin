@@ -27,7 +27,6 @@ import net.momirealms.craftengine.core.world.CEWorld;
 import net.momirealms.craftengine.core.world.World;
 import net.momirealms.craftengine.core.world.context.BlockPlaceContext;
 import net.momirealms.craftengine.core.world.context.UseOnContext;
-import net.momirealms.craftengine.libraries.adventure.text.Component;
 import net.momirealms.craftengine.proxy.minecraft.core.DirectionProxy;
 import net.momirealms.craftengine.proxy.minecraft.world.level.BlockGetterProxy;
 import net.momirealms.craftengine.proxy.minecraft.world.level.block.SupportTypeProxy;
@@ -42,6 +41,7 @@ import net.kaleidoscope.cookery.util.BehaviorConfig;
 import net.kaleidoscope.cookery.util.Hands;
 import net.kaleidoscope.cookery.util.InteractGuard;
 import net.kaleidoscope.cookery.util.InventoryUtils;
+import net.kaleidoscope.cookery.util.Localization;
 import net.kaleidoscope.cookery.item.ItemKeys;
 import net.kaleidoscope.cookery.item.ItemMatch;
 import net.kaleidoscope.cookery.recipe.ApplianceType;
@@ -71,11 +71,11 @@ public final class StockpotBehavior extends BukkitBlockBehavior implements Entit
     public Key bowlItem = ItemKeys.BOWL;
     public Key recipeItemNoRecipe = ItemKeys.RECIPE_ITEM_NO_RECIPE;
     public Key recipeItemHasRecipe = ItemKeys.RECIPE_ITEM_HAS_RECIPE;
-    public String msgStartStewing = "开始炖煮了，记得准备碗来盛菜";
-    public String msgNotEnoughIngredients = "背包中没有足够的食材！";
-    public String msgNoRecipe = "当前食材没有对应的配方！";
-    public String msgRecipeSaved = "已成功记录这道菜的食谱！";
-    public String msgUseBowl = "请手持碗右键盛出";
+    public String msgStartStewing = "kaleidoscopecookery.message.stockpot.start_stewing";
+    public String msgNotEnoughIngredients = "kaleidoscopecookery.message.stockpot.not_enough_ingredients";
+    public String msgNoRecipe = "kaleidoscopecookery.message.stockpot.no_recipe";
+    public String msgRecipeSaved = "kaleidoscopecookery.message.stockpot.recipe_saved";
+    public String msgUseBowl = "kaleidoscopecookery.message.stockpot.use_bowl";
 
     public StockpotBehavior(BlockDefinition blockDefinition) {
         super(blockDefinition);
@@ -175,7 +175,7 @@ public final class StockpotBehavior extends BukkitBlockBehavior implements Entit
                 updateLidState(context, state, true);
                 player.swingHand(hand);
                 if (controller.stage() == StockpotStage.PUT_INGREDIENT && !controller.getIngredients().isEmpty()) {
-                    player.sendActionBar(Component.text(msgStartStewing));
+                    player.sendActionBar(Localization.component(msgStartStewing));
                 }
                 return InteractionResult.SUCCESS_AND_CANCEL;
             }
@@ -251,7 +251,7 @@ public final class StockpotBehavior extends BukkitBlockBehavior implements Entit
                 if (filled) {
                     player.swingHand(hand);
                 } else {
-                    player.sendActionBar(Component.text(msgNotEnoughIngredients));
+                    player.sendActionBar(Localization.component(msgNotEnoughIngredients));
                 }
                 return InteractionResult.SUCCESS_AND_CANCEL;
             }
@@ -272,7 +272,7 @@ public final class StockpotBehavior extends BukkitBlockBehavior implements Entit
                     .findBestFlexRecipe(ApplianceType.STOCKPOT, ingredientIds)
                     .orElse(null);
             if (matchedRecipe == null) {
-                player.sendActionBar(Component.text(msgNoRecipe));
+                player.sendActionBar(Localization.component(msgNoRecipe));
                 return InteractionResult.SUCCESS_AND_CANCEL;
             }
             Item hasRecipeItem = InventoryUtils.createOrEmpty(recipeItemHasRecipe);
@@ -282,7 +282,7 @@ public final class StockpotBehavior extends BukkitBlockBehavior implements Entit
             Item ceRecorded = BukkitItemManager.instance().wrap(recorded);
             InventoryUtils.giveOrHold(player, hand, ceRecorded);
             player.swingHand(hand);
-            player.sendActionBar(Component.text(msgRecipeSaved));
+            player.sendActionBar(Localization.component(msgRecipeSaved));
             return InteractionResult.SUCCESS_AND_CANCEL;
         }
         return InteractionResult.SUCCESS_AND_CANCEL;
@@ -340,7 +340,7 @@ public final class StockpotBehavior extends BukkitBlockBehavior implements Entit
                     return InteractionResult.SUCCESS_AND_CANCEL;
                 }
             } else {
-                player.sendActionBar(Component.text(msgUseBowl));
+                player.sendActionBar(Localization.component(msgUseBowl));
                 return InteractionResult.SUCCESS_AND_CANCEL;
             }
         }

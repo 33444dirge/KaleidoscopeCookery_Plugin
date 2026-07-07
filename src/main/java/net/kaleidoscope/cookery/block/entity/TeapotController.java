@@ -11,6 +11,7 @@ import net.momirealms.craftengine.bukkit.api.CraftEngineBlocks;
 import net.kaleidoscope.cookery.util.DropUtils;
 import net.kaleidoscope.cookery.util.HeatSourceUtils;
 import net.kaleidoscope.cookery.util.InventoryUtils;
+import net.kaleidoscope.cookery.util.Localization;
 import net.momirealms.craftengine.bukkit.item.BukkitItemManager;
 import net.momirealms.craftengine.bukkit.util.ItemStackUtils;
 import net.momirealms.craftengine.bukkit.util.LocationUtils;
@@ -380,7 +381,7 @@ public final class TeapotController extends BlockEntityController {
     }
 
     private Component statusComponent() {
-        Component head = AdventureHelper.miniMessage().deserialize(statusMsg());
+        Component head = Localization.component(statusMsg());
         if (status == FINISHED) {
             return head.append(Component.newline()).append(itemComponent(result, servings));
         }
@@ -393,18 +394,18 @@ public final class TeapotController extends BlockEntityController {
 
     private Component fluidComponent() {
         if (fluid == null) {
-            return Component.text("空");
+            return Localization.component("kaleidoscopecookery.message.teapot.empty");
         }
         TeapotLiquid liquid = FoodRecipeRegistry.instance().getTeapotLiquid(fluid);
         if (liquid != null && liquid.displayName() != null && !liquid.displayName().isEmpty()) {
-            return Component.text(liquid.displayName());
+            return Localization.component(liquid.displayName());
         }
         return Component.text(fluid.value());
     }
 
     private Component itemComponent(Item item, int count) {
         if (item.isEmpty()) {
-            return Component.text("无");
+            return Localization.component("kaleidoscopecookery.message.teapot.none");
         }
         Component name = item.hoverNameComponent().orElse(Component.text(item.id().value()));
         return Component.empty().append(name).append(Component.text(" x" + count));
